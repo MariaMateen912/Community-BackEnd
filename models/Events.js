@@ -10,11 +10,8 @@ const EventsSchema = new Schema({
     type: Date,
     required: true
   },
-  end: {
-    type: Date,
-    required: true
-  }
+  
 });
 
-module.exports = mongoose.model('Event', EventsSchema, 'events');
+module.exports = mongoose.model('events',EventsSchema);
  // Export as 'Event', not 'events'

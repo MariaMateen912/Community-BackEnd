@@ -13,7 +13,10 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/grievance', require('./routes/grievance'));
 app.use('/api/events', require('./routes/events'));
+app.use('/api/getevents', require('./routes/auth'));
+//app.use('/api/notice', require('./routes/notice'));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+

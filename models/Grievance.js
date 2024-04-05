@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const GrievanceSchema = new Schema({
+    location: {
+        type: String,
+        enum: ['nibmRd', 'kausarBaug', 'pargeNagar'], // Define the possible values 
+        required: true
+    },
    subject:{
         type: String,
         required : true
@@ -13,6 +18,7 @@ const GrievanceSchema = new Schema({
         type: String,
         required : true
     },
+    
 
 
 })
