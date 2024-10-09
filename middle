@@ -1,0 +1,71 @@
+1.Write a shell script to print below pattern
+0
+0 1
+0 1 2
+0 1 2 3
+
+# Define the number of rows for the pattern
+rows=4
+
+# Outer loop for each row
+for (( i=0; i<rows; i++ ))
+do
+  # Inner loop to print numbers in each row
+  for (( j=0; j<=i; j++ ))
+  do
+    echo -n "$j "  # Print number without newline (-n option)
+  done
+  echo  # Move to the next line after each row
+done
+
+2..Write a shell script to compile all C files and delete those files
+having errors.
+
+# Loop through all .c files in the current directory
+for file in *.c
+do
+  # Compile the file
+  gcc "$file" -o "${file%.c}.out" 2> /dev/null
+
+  # Check if the compilation was successful
+  if [ $? -ne 0 ]; then
+    echo "Compilation error in $file. Deleting..."
+    rm "$file"  # Remove the file if there was an error
+  else
+    echo "$file compiled successfully."
+  fi
+done
+
+
+3.Write a shell script to print below pattern
+1
+1 2 1
+1 3 3
+1
+
+# Define the number of rows for the pattern
+rows=4
+
+# Loop through each row
+for (( i=0; i<rows; i++ ))
+do
+  # Print leading spaces for alignment
+  for (( j=i; j<rows-1; j++ ))
+  do
+    echo -n " "  # Print space without newline
+  done
+
+  # Print the numbers in the pattern
+  for (( j=0; j<=i; j++ ))
+  do
+    # Calculate and print the value based on row index
+    if (( i == 1 && j == 1 )); then
+      echo -n "$(( i + 1 )) "  # For the second row's middle value
+    else
+      echo -n "$(( j + 1 )) "  # For other values
+    fi
+  done
+
+  echo  # Move to the next line after each row
+done
+
