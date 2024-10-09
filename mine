@@ -1,0 +1,151 @@
+Q1.Write a shell script to count the numbrt words.lines,character from given file accept file name from commandline .
+
+# Check if a filename was provided
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 filename"
+  exit 1
+fi
+
+# Check if the file exists
+if [ ! -f "$1" ]; then
+  echo "File not found!"
+  exit 1
+fi
+
+# Use wc (word count) command to get the number of lines, words, and characters
+lines=$(wc -l < "$1")
+words=$(wc -w < "$1")
+characters=$(wc -m < "$1")
+
+# Output the results
+echo "File: $1"
+echo "Lines: $lines"
+echo "Words: $words"
+echo "Characters: $characters"
+
+Q2.use the bellow commands
+
+chmod 
+chmod 755 file.txt
+
+chown
+chown john file.txt
+
+grep
+earch for the word "error" in log.txt:
+grep "error" log.txt
+
+Search for a case-insensitive match of "warning" in log.txt:
+grep -i "warning" log.txt
+
+Display the line number along with the matching lines:
+grep -n "error" log.txt
+
+
+3.Shell Script to Reverse a String
+
+# Accept the string from the user
+echo "Enter a string: "
+read str
+
+# Reverse the string
+reverse_str=$(echo "$str" | rev)
+
+# Output the reversed string
+echo "Reversed string: $reverse_str"
+
+4.Shell Script to Print Elements of an Array
+
+# Define an array
+array=("apple" "banana" "cherry" "date")
+
+# Print elements of the array
+echo "Array elements are:"
+for element in "${array[@]}"
+do
+  echo "$element"
+done
+
+5.Shell Script to Reverse Array Elements
+
+# Define an array
+array=("apple" "banana" "cherry" "date")
+
+# Get the number of elements in the array
+length=${#array[@]}
+
+# Reverse and print array elements
+echo "Reversed array elements are:"
+for (( i=$length-1; i>=0; i-- ))
+do
+  echo "${array[$i]}"
+done
+
+
+6.Demonstrate the use of $$, $0, $*, $@
+
+echo "PID of the script: $$"      # $$ gives the Process ID of the current script
+echo "Script name: $0"            # $0 gives the name of the script
+echo "All arguments using \$*: $*" # $* gives all arguments as a single string
+echo "All arguments using \$@: $@" # $@ gives all arguments as separate quoted strings
+
+    Usage: Run the script with arguments (e.g., ./script.sh arg1 arg2 arg3) to see how $* and $@ handle the input
+    
+7. Execute Following Commands: ls, cd, rm, Delete Directory
+
+# List all files in the current directory
+echo "Listing files:"
+ls
+
+# Change directory (example: change to /tmp)
+echo "Changing to /tmp directory:"
+cd /tmp || exit 1
+
+# Remove a file (example: remove 'test.txt' if it exists)
+echo "Removing file 'test.txt' (if exists):"
+rm -f test.txt
+
+# Remove a directory (example: 'mydir')
+echo "Removing directory 'mydir' (if exists):"
+rm -rf mydir
+
+8.Shell Script to Delete All Empty Lines from Any File
+
+# Accept filename as input
+echo "Enter filename to remove empty lines:"
+read filename
+
+# Remove empty lines from the file
+sed -i '/^$/d' "$filename"
+
+echo "Empty lines removed from $filename"
+
+
+9.Shell Script to Change Case of String
+
+# Accept string from user
+echo "Enter a string:"
+read str
+
+# Change the case to uppercase
+uppercase=$(echo "$str" | tr '[:lower:]' '[:upper:]')
+
+echo "Uppercase string: $uppercase"
+
+# Change the case to lowercase
+lowercase=$(echo "$str" | tr '[:upper:]' '[:lower:]')
+
+echo "Lowercase string: $lowercase"
+
+
+10.Shell Script to Delete All Text Files from Directory
+
+# Accept directory name as input
+echo "Enter directory path to delete all .txt files:"
+read dir
+
+# Delete all .txt files from the specified directory
+rm -f "$dir"/*.txt
+
+echo "All .txt files in $dir have been deleted."
+
