@@ -1,0 +1,1426 @@
+1.Create an HTML form that contain the Student Registration details and write a
+JavaScript to validate Student first and last name as it should not contain other
+than
+alphabets and age should be between 18 to 50.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration Form</title>
+<script src="https://cdn.jsdelivr.net/npm/yup@0.32.11/dist/yup.min.js"></script>
+</head>
+<body>
+<h2>Student Registration Form</h2>
+<form id="studentForm">
+<div>
+<label for="firstName">First Name</label>
+<input type="text" id="firstName" name="firstName">
+<div id="firstNameError" class="error"></div>
+</div>
+<div>
+<label for="lastName">Last Name</label>
+<input type="text" id="lastName" name="lastName">
+<div id="lastNameError" class="error"></div>
+</div>
+<div>
+<label for="age">Age</label>
+<input type="number" id="age" name="age">
+<div id="ageError" class="error"></div>
+</div>
+<button type="submit">Register</button>
+</form>
+<script>
+// Define Yup validation schema
+const studentSchema = yup.object().shape({
+firstName: yup.string()
+.matches(/^[A-Za-z]+$/, 'First name should contain only alphabets')
+.required('First name is required'),
+lastName: yup.string().matches(/^[A-Za-z]+$/, 'Last name should contain only alphabets')
+.required('Last name is required'),
+age: yup.number()
+.min(18, 'Age should be at least 18')
+.max(50, 'Age should be less than 50')
+.required('Age is required')
+});
+document.getElementById('studentForm').addEventListener('submit', async function(event) {
+event.preventDefault();
+// Clear previous errors
+document.getElementById('firstNameError').textContent = '';
+document.getElementById('lastNameError').textContent = '';
+document.getElementById('ageError').textContent = '';
+// Get form values
+let firstName = document.getElementById('firstName').value.trim();
+let lastName = document.getElementById('lastName').value.trim();
+let age = document.getElementById('age').value.trim();
+try {
+// Validate form data using Yup
+await studentSchema.validate({ firstName, lastName, age }, { abortEarly: false });
+alert('Form Submitted Successfully!');
+document.getElementById('studentForm').reset();
+} catch (errors) {
+// Display validation errors
+errors.inner.forEach((error) => {
+if (error.path === 'firstName') {
+document.getElementById('firstNameError').textContent = error.message;
+}
+if (error.path === 'lastName') {
+document.getElementById('lastNameError').textContent = error.message;
+}
+if (error.path === 'age') {
+document.getElementById('ageError').textContent = error.message;
+}
+});
+}
+});
+</script>
+</body>
+</html>
+
+2.Create an HTML form that contain the Employee Registration details and write
+a JavaScript to validate DOB, Joining Date, and Salary.<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Registration Form</title>
+<script src="https://cdn.jsdelivr.net/npm/yup@0.32.11/dist/yup.min.js"></script>
+</head>
+<body>
+<h2>Employee Registration Form</h2>
+<form id="employeeForm">
+<label for="dob">Date of Birth</label>
+<input type="date" id="dob" name="dob">
+<div id="dobError" class="error"></div>
+<label for="joiningDate">Joining Date</label>
+<input type="date" id="joiningDate" name="joiningDate">
+<div id="joiningDateError" class="error"></div>
+<label for="salary">Salary</label>
+<input type="number" id="salary" name="salary" placeholder="Enter salary">
+<div id="salaryError" class="error"></div>
+<button type="submit">Register</button>
+</form>
+<script>
+// Define Yup validation schema
+const employeeSchema = yup.object().shape({
+dob: yup.date()
+.max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)), 'You must be at least
+18 years old')
+.required('Date of birth is required'),
+joiningDate: yup.date()
+.min(yup.ref('dob'), 'Joining date must be after your date of birth')
+.max(new Date(), 'Joining date cannot be in the future')
+.required('Joining date is required'),
+salary: yup.number()
+.positive('Salary must be a positive number')
+.required('Salary is required'),
+});
+document.getElementById('employeeForm').addEventListener('submit', async function(event) {
+event.preventDefault();
+// Clear previous errorsdocument.getElementById('dobError').textContent = '';
+document.getElementById('joiningDateError').textContent = '';
+document.getElementById('salaryError').textContent = '';
+// Get form values
+const dob = document.getElementById('dob').value;
+const joiningDate = document.getElementById('joiningDate').value;
+const salary = document.getElementById('salary').value;
+try {
+// Validate form data using Yup
+await employeeSchema.validate({ dob, joiningDate, salary }, { abortEarly: false });
+alert('Form submitted successfully!');
+document.getElementById('employeeForm').reset();
+} catch (errors) {
+// Display validation errors
+errors.inner.forEach((error) => {
+if (error.path === 'dob') {
+document.getElementById('dobError').textContent = error.message;
+}
+if (error.path === 'joiningDate') {
+document.getElementById('joiningDateError').textContent = error.message;
+}
+if (error.path === 'salary') {
+document.getElementById('salaryError').textContent = error.message;
+}
+});
+}
+});
+</script>
+</body>
+</html>
+3.3.Create an HTML form for Login and write a JavaScript to validate email ID
+using Regular Expression
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Form</title>
+</head>
+<body>
+<h2>Login Form</h2><form id="loginForm">
+<label for="email">Email</label>
+<input type="email" id="email" name="email" placeholder="Enter your email">
+<div id="emailError" class="error"></div>
+<label for="password">Password</label>
+<input type="password" id="password" name="password" placeholder="Enter your password">
+<button type="submit">Login</button>
+</form>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+event.preventDefault();
+// Clear previous error messages
+document.getElementById('emailError').textContent = '';
+const email = document.getElementById('email').value.trim();
+// Regular expression for email validation
+const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+let isValid = true;
+// Validate email format
+if (!emailPattern.test(email)) {
+document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+isValid = false;
+}
+if (isValid) {
+alert('Login successful!');
+document.getElementById('loginForm').reset();
+}
+});
+</script>
+</body>
+</html>\
+
+4.Create a Node.js file that writes an HTML form, with an upload field .
+
+
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const app = express();
+// Set up storage for multerconst storage = multer.diskStorage({
+destination: function (req, file, cb) {
+cb(null, 'uploads/'); // Upload destination folder
+},
+filename: function (req, file, cb) {
+cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+}
+});
+// Initialize multer
+const upload = multer({ storage: storage });
+// Middleware to serve static files (CSS, images, etc.)
+app.use(express.static('public'));
+// HTML form
+app.get('/', (req, res) => {
+res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Upload Form</title>
+<style>
+body { font-family: Arial, sans-serif; }
+form { max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; }
+label, input { display: block; width: 100%; margin-bottom: 10px; }
+button { background-color: #4CAF50; color: white; padding: 10px; border: none; cursor:
+pointer; }
+button:hover { background-color: #45a049; }
+</style>
+</head>
+<body>
+<h2>File Upload Form</h2>
+<form action="/upload" method="POST" enctype="multipart/form-data">
+<label for="file">Choose a file to upload</label>
+<input type="file" id="file" name="file" required>
+<button type="submit">Upload</button>
+</form>
+</body>
+</html>
+`);
+});
+// File upload route
+app.post('/upload', upload.single('file'), (req, res) => {
+if (!req.file) {
+return res.status(400).send('No file uploaded.');}
+res.send(`File uploaded successfully! File name: ${req.file.filename}`);
+});
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+Create a node.js file that Select all records from the "customers" table, and display
+the result object on console.
+
+
+const mysql = require('mysql');
+// Create a connection to the database
+const connection = mysql.createConnection({
+host: 'localhost', // Replace with your host, e.g., '127.0.0.1'
+user: 'root',
+// Replace with your MySQL username
+password: '',
+// Replace with your MySQL password
+database: 'mydatabase' // Replace with your database name
+});
+// Connect to the database
+connection.connect((err) => {
+if (err) {
+return console.error('Error connecting to the database: ' + err.stack);
+}
+console.log('Connected to the database as ID ' + connection.threadId);
+});
+// Query to select all records from the customers table
+const query = 'SELECT * FROM customers';
+connection.query(query, (err, results) => {
+if (err) {
+return console.error('Error executing query: ' + err.stack);
+}
+// Display the result object on the console
+console.log('Customers:', results);
+});
+// End the connection after the query is complete
+connection.end();
+6.Create a node.js file that Insert Multiple Records in "student" table, and display the
+result object on console.const mysql = require('mysql');
+// Create a connection to the database
+const connection = mysql.createConnection({
+host: 'localhost', // Replace with your MySQL host (e.g., 'localhost' or '127.0.0.1')
+user: 'root',
+// Replace with your MySQL username
+password: '',
+// Replace with your MySQL password
+database: 'mydatabase' // Replace with your database name
+});
+// Connect to the database
+connection.connect((err) => {
+if (err) {
+return console.error('Error connecting to the database: ' + err.stack);
+}
+console.log('Connected to the database as ID ' + connection.threadId);
+});
+// SQL query to insert multiple records into the student table
+const query = `INSERT INTO student (name, age, grade) VALUES ?`;
+const students = [
+['John Doe', 20, 'A'],
+['Jane Smith', 22, 'B'],
+['Robert Brown', 19, 'C'],
+['Emily Davis', 21, 'A']
+];
+// Execute the insert query
+connection.query(query, [students], (err, result) => {
+if (err) {
+return console.error('Error executing query: ' + err.stack);
+}
+// Display the result object on the console
+console.log('Records inserted:', result.affectedRows);
+console.log('Insert result:', result);
+});
+// End the connection after the query is complete
+connection.end();
+7.Create a node.js file that Select all records from the "customers" table, and delete the
+specified record.
+const mysql = require('mysql');
+// Create a connection to the database
+const connection = mysql.createConnection({host: 'localhost', // Replace with your host (e.g., 'localhost')
+user: 'root',
+// Replace with your MySQL username
+password: '',
+// Replace with your MySQL password
+database: 'mydatabase' // Replace with your database name
+});
+// Connect to the database
+connection.connect((err) => {
+if (err) {
+return console.error('Error connecting to the database: ' + err.stack);
+}
+console.log('Connected to the database as ID ' + connection.threadId);
+});
+// Function to select all records
+function selectCustomers() {
+const selectQuery = 'SELECT * FROM customers';
+connection.query(selectQuery, (err, results) => {
+if (err) {
+return console.error('Error executing select query: ' + err.stack);
+}
+// Display all customers
+console.log('Customer Records:', results);
+}
+// Call the delete function after selecting records
+const customerIdToDelete = 1; // Specify the ID of the record you want to delete
+deleteCustomer(customerIdToDelete);
+});
+// Function to delete a record based on customer ID
+function deleteCustomer(customerId) {
+const deleteQuery = 'DELETE FROM customers WHERE id = ?';
+connection.query(deleteQuery, [customerId], (err, result) => {
+if (err) {
+return console.error('Error executing delete query: ' + err.stack);
+}
+console.log(`Deleted record with ID: ${customerId}`);
+console.log('Affected Rows:', result.affectedRows);
+}
+// Close the connection
+connection.end();
+});// Call the function to select all records
+selectCustomers();
+8.Creat a node js express server to provide login REST API validate response on any
+REST
+client like POSTMAN
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const PORT = process.env.PORT || 3000;
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+// Sample users data (this would typically come from a database)
+const users = [
+{ username: 'john', password: 'password123' },
+{ username: 'jane', password: 'mypassword' }
+];
+// Login API
+app.post('/login', (req, res) => {
+const { username, password } = req.body;
+// Validate username and password
+const user = users.find(user => user.username === username && user.password === password);
+if (user) {
+return res.status(200).json({
+message: 'Login successful',
+user: {
+username: user.username
+}
+});
+} else {
+return res.status(401).json({
+message: 'Invalid username or password'
+});
+}
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});9.Create a node js express server to provide register REST API validate response on any
+REST client like POSTMAN
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+// Initialize the express app
+const app = express();
+const PORT = 3000;
+// Middleware for parsing JSON request bodies
+app.use(bodyParser.json());
+// Mock user database (in real applications, you would use a database)
+const users = [];
+// Registration route
+app.post('/register', async (req, res) => {
+const { username, email, password } = req.body;
+// Input validation
+if (!username || !email || !password) {
+return res.status(400).json({ message: 'Please fill in all required fields' });
+}
+// Check if the email already exists in the database
+const userExists = users.find(user => user.email === email);
+if (userExists) {
+return res.status(400).json({ message: 'Email already exists' });
+}
+try {
+// Hash the password before saving it
+const salt = await bcrypt.genSalt(10);
+const hashedPassword = await bcrypt.hash(password, salt);
+// Save the new user (you would save this in a real database)
+const newUser = {
+id: users.length + 1,
+username,
+email,
+password: hashedPassword
+};
+users.push(newUser);
+// Respond with a success message
+res.status(201).json({
+message: 'User registered successfully',user: {
+id: newUser.id,
+username: newUser.username,
+email: newUser.email
+}
+});
+} catch (err) {
+res.status(500).json({ message: 'Server error' });
+}
+});
+// Test route to get all users (for testing purposes)
+app.get('/users', (req, res) => {
+res.json(users);
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server running on http://localhost:${PORT}`);
+});
+
+10.Create a nodejs express server to list all the employees from the employee table
+validate response on any REST client like POSTMAN.
+
+const express = require('express');
+const mysql = require('mysql2');
+const bodyParser = require('body-parser');
+// Initialize the express app
+const app = express();
+const PORT = 3000;
+// Middleware to parse JSON
+app.use(bodyParser.json());
+// Create MySQL connection
+const db = mysql.createConnection({
+host: 'localhost',
+user: 'root',
+password: 'your_password', // Change this to your MySQL password
+database: 'your_database' // Change this to your MySQL database name
+});
+// Connect to MySQL
+db.connect((err) => {
+if (err) {
+console.error('Error connecting to the database:', err);
+return;}
+console.log('Connected to the MySQL database');
+});
+// Route to list all employees
+app.get('/employees', (req, res) => {
+const sql = 'SELECT * FROM employee';
+db.query(sql, (err, results) => {
+if (err) {
+return res.status(500).json({
+message: 'Server error',
+error: err
+});
+}
+// Respond with employee data
+res.json({
+message: 'Employee list retrieved successfully',
+data: results
+});
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server running on http://localhost:${PORT}`);
+});
+11.Build a simple multi-page React application using React Router. Create different
+routes for
+a home page, about page, and contact page. Implement navigation between these routes.
+import React from 'react';
+const Home = () => {
+return (
+<div>
+<h1>Home Page</h1>
+<p>Welcome to the Home Page!</p>
+</div>
+);
+};
+export default Home;import React from 'react';
+const About = () => {
+return (
+<div>
+<h1>About Page</h1>
+<p>This is the About Page!</p>
+</div>
+);
+};
+export default About;
+import React from 'react';
+const Contact = () => {
+return (
+<div>
+<h1>Contact Page</h1>
+<p>This is the Contact Page!</p>
+</div>
+);
+};
+export default Contact;
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Contact from './pages/Contact';
+const App = () => {
+return (
+<Router>
+<nav>
+<ul>
+<li>
+<Link to="/">Home</Link>
+</li>
+<li>
+<Link to="/about">About</Link>
+</li>
+<li>
+<Link to="/contact">Contact</Link>
+</li>
+</ul>
+</nav>
+<Switch>
+<Route path="/" exact component={Home} />};
+);
+<Route path="/about" component={About} />
+<Route path="/contact" component={Contact} />
+</Switch>
+</Router>
+export default App;
+12.Create a nodejs express server to insert employee into database.
+const express = require('express');
+const mysql = require('mysql2');
+const bodyParser = require('body-parser');
+// Initialize the express app
+const app = express();
+const PORT = 3000;
+// Middleware to parse JSON
+app.use(bodyParser.json());
+// Create MySQL connection
+const db = mysql.createConnection({
+host: 'localhost',
+user: 'root',
+// Change this to your MySQL username
+password: 'your_password', // Change this to your MySQL password
+database: 'company' // Change this to your MySQL database name
+});
+// Connect to MySQL
+db.connect((err) => {
+if (err) {
+console.error('Error connecting to the database:', err);
+return;
+}
+console.log('Connected to the MySQL database');
+});
+// Endpoint to insert a new employee
+app.post('/employees', (req, res) => {
+const { name, email, position, salary } = req.body;
+const sql = 'INSERT INTO employee (name, email, position, salary) VALUES (?, ?, ?, ?)';
+db.query(sql, [name, email, position, salary], (err, result) => {
+if (err) {
+return res.status(500).json({}
+message: 'Server error',
+error: err
+});
+// Respond with success message
+res.status(201).json({
+message: 'Employee inserted successfully',
+data: {
+id: result.insertId,
+name,
+email,
+position,
+salary
+}
+});
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server running on http://localhost:${PORT}`);
+});
+13.Create a nodejs express server to search an employee by email validate response on
+any REST client like POSTMAN
+const express = require('express');
+const mysql = require('mysql2');
+const bodyParser = require('body-parser');
+// Initialize the express app
+const app = express();
+const PORT = 3000;
+// Middleware to parse JSON
+app.use(bodyParser.json());
+// Create MySQL connection
+const db = mysql.createConnection({
+host: 'localhost',
+user: 'root',
+// Change this to your MySQL username
+password: 'your_password', // Change this to your MySQL password
+database: 'company' // Change this to your MySQL database name
+});
+// Connect to MySQL
+db.connect((err) => {
+if (err) {
+console.error('Error connecting to the database:', err);return;
+}
+console.log('Connected to the MySQL database');
+});
+// Endpoint to search for an employee by email
+app.get('/employees', (req, res) => {
+const { email } = req.query;
+if (!email) {
+return res.status(400).json({ message: 'Email query parameter is required' });
+}
+const sql = 'SELECT * FROM employee WHERE email = ?';
+db.query(sql, [email], (err, results) => {
+if (err) {
+return res.status(500).json({ message: 'Server error', error: err });
+}
+if (results.length === 0) {
+return res.status(404).json({ message: 'Employee not found' });
+}
+// Respond with the found employee details
+res.status(200).json({
+message: 'Employee found',
+data: results[0]
+});
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server running on http://localhost:${PORT}`);
+});
+14.Create a nodejs express server to generate jwt token in the response of login api.
+const express = require('express');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const app = express();
+const PORT = process.env.PORT || 3000;
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());// Secret key for JWT (should be stored securely)
+const SECRET_KEY = 'your_secret_key';
+// Sample users data (this would typically come from a database)
+const users = [
+{ username: 'john', password: 'password123' },
+{ username: 'jane', password: 'mypassword' }
+];
+// Login API
+app.post('/login', (req, res) => {
+const { username, password } = req.body;
+// Validate username and password
+const user = users.find(user => user.username === username && user.password === password);
+if (user) {
+// Generate JWT token
+const token = jwt.sign({ username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+return res.status(200).json({
+message: 'Login successful',
+token: token
+});
+} else {
+return res.status(401).json({
+message: 'Invalid username or password'
+});
+}
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});
+15.Create a nodejs server to insert teacher data into teacher table use mysql.
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const app = express();
+const PORT = process.env.PORT || 3000;
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+// MySQL connectionconst db = mysql.createConnection({
+host: 'localhost',
+// Change if necessary
+user: 'your_mysql_user', // Your MySQL username
+password: 'your_password', // Your MySQL password
+database: 'school'
+// The database you created
+});
+// Connect to MySQL
+db.connect(err => {
+if (err) {
+console.error('Could not connect to MySQL:', err);
+process.exit(1);
+}
+console.log('Connected to MySQL');
+});
+// Insert Teacher API
+app.post('/teachers', (req, res) => {
+const { name, subject, email, phone } = req.body;
+const teacher = { name, subject, email, phone };
+const query = 'INSERT INTO teachers SET ?';
+db.query(query, teacher, (err, result) => {
+if (err) {
+return res.status(500).json({ message: 'Error inserting teacher data', error: err });
+}
+return res.status(201).json({
+message: 'Teacher data inserted successfully',
+teacherId: result.insertId
+});
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});
+16.Create a node js server to delete student record by roll no using mysql.
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const app = express();
+const PORT = process.env.PORT || 3000;// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+// MySQL connection
+const db = mysql.createConnection({
+host: 'localhost',
+// Change if necessary
+user: 'your_mysql_user', // Your MySQL username
+password: 'your_password', // Your MySQL password
+database: 'school'
+// The database you created
+});
+// Connect to MySQL
+db.connect(err => {
+if (err) {
+console.error('Could not connect to MySQL:', err);
+process.exit(1);
+}
+console.log('Connected to MySQL');
+});
+// Delete Student API
+app.delete('/students/:roll_no', (req, res) => {
+const rollNo = req.params.roll_no;
+const query = 'DELETE FROM students WHERE roll_no = ?';
+db.query(query, [rollNo], (err, result) => {
+if (err) {
+return res.status(500).json({ message: 'Error deleting student record', error: err });
+}
+if (result.affectedRows === 0) {
+return res.status(404).json({ message: 'Student not found' });
+}
+return res.status(200).json({ message: 'Student record deleted successfully' });
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});
+17.Create a node js server to list all the students having marks greater than 60 using
+mysql.
+const express = require('express');
+const bodyParser = require('body-parser');const mysql = require('mysql');
+const app = express();
+const PORT = process.env.PORT || 3000;
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+// MySQL connection
+const db = mysql.createConnection({
+host: 'localhost',
+// Change if necessary
+user: 'your_mysql_user', // Your MySQL username
+password: 'your_password', // Your MySQL password
+database: 'school'
+// The database you created
+});
+// Connect to MySQL
+db.connect(err => {
+if (err) {
+console.error('Could not connect to MySQL:', err);
+process.exit(1);
+}
+console.log('Connected to MySQL');
+});
+// Get Students with Marks Greater than 60 API
+app.get('/students/above-60', (req, res) => {
+const query = 'SELECT * FROM students WHERE marks > 60';
+db.query(query, (err, results) => {
+if (err) {
+return res.status(500).json({ message: 'Error fetching students', error: err });
+}
+return res.status(200).json(results);
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});SMALL QUESTIONS
+1.Create a Node.js file that will convert the output "Hello World!" into upper-case
+Letters.
+// uppercase.js
+// Define the original string
+const originalString = "Hello World!";
+// Convert the string to uppercase
+const upperCaseString = originalString.toUpperCase();
+// Output the result
+console.log(upperCaseString);
+2.Create a Node.js file that opens the requested file and returns the content to the client.
+If anything goes wrong, throw a 404 err
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const app = express();
+const PORT = process.env.PORT || 3000;
+// Endpoint to read a requested file
+app.get('/read-file', (req, res) => {
+const filePath = path.join(__dirname, 'yourfile.txt'); // Specify your file name here
+// Read the file
+fs.readFile(filePath, 'utf8', (err, data) => {
+if (err) {
+// If an error occurs, send a 404 error
+return res.status(404).send('404: File Not Found');
+}
+// Send the file content as response
+res.send(data);
+});
+});
+// Start the server
+app.listen(PORT, () => {
+console.log(`Server is running on http://localhost:${PORT}`);
+});
+3.Create a Node.js file that demonstrates create database and table in MySQLconst mysql = require('mysql2');
+// Create a connection to the MySQL database
+const connection = mysql.createConnection({
+host: 'localhost', // Your MySQL host
+user: 'root',
+// Your MySQL username
+password: 'password' // Your MySQL password
+});
+// Connect to MySQL
+connection.connect(err => {
+if (err) {
+return console.error('Error connecting to MySQL:', err.stack);
+}
+console.log('Connected to MySQL as id ' + connection.threadId);
+});
+// Create database and table
+const createDatabaseAndTable = () => {
+// SQL statements to create database and table
+const createDbQuery = 'CREATE DATABASE IF NOT EXISTS demo_db';
+const useDbQuery = 'USE demo_db';
+const createTableQuery = `
+CREATE TABLE IF NOT EXISTS students (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+age INT NOT NULL,
+email VARCHAR(100) UNIQUE NOT NULL
+)
+`;
+// Execute SQL queries
+connection.query(createDbQuery, (err, results) => {
+if (err) {
+console.error('Error creating database:', err.stack);
+} else {
+console.log('Database created or already exists.');
+connection.query(useDbQuery, (err) => {
+if (err) {
+console.error('Error using database:', err.stack);
+} else {
+connection.query(createTableQuery, (err, results) => {
+if (err) {
+console.error('Error creating table:', err.stack);
+} else {
+console.log('Table "students" created or already exists.');
+}
+// Close the connection after queries
+connection.end();};
+}
+});
+}
+});
+});
+// Call the function to create database and table
+createDatabaseAndTable();
+4.Create a login component using react js consider appropriate fields .
+import React, { useState } from 'react';
+const Login = () => {
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [error, setError] = useState('');
+const handleSubmit = (e) => {
+e.preventDefault();
+// Basic validation
+if (!email || !password) {
+setError('Please fill in all fields');
+return;
+}
+if (!/\S+@\S+\.\S+/.test(email)) {
+setError('Please enter a valid email address');
+return;
+}
+// Clear error if validation passes
+setError('');
+console.log('Logging in with', { email, password });
+// Handle login logic here (e.g., API call)
+};
+return (
+<div>
+<h2>Login</h2>
+{error && <p>{error}</p>}
+<form onSubmit={handleSubmit}>
+<div >
+<label htmlFor="email">Email:</label>
+<input
+type="email"
+id="email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}required
+};
+);
+/>
+</div>
+<div>
+<label htmlFor="password">Password:</label>
+<input
+type="password"
+id="password"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+required
+/>
+</div>
+<button type="submit" >
+Login
+</button>
+</form>
+</div>
+export default Login;
+5.Create a register component using react js consider appropriate fields.
+import React, { useState } from 'react';
+const Register = () => {
+const [formData, setFormData] = useState({
+name: '',
+email: '',
+password: '',
+phone: ''
+});
+const [error, setError] = useState('');
+// Handle input changes
+const handleInputChange = (e) => {
+const { name, value } = e.target;
+setFormData({
+...formData,
+[name]: value
+});
+};
+// Handle form submission
+const handleSubmit = (e) => {e.preventDefault();
+const { name, email, password, phone } = formData;
+// Basic validation
+if (!name || !email || !password || !phone) {
+setError('Please fill in all fields');
+return;
+}
+if (!/\S+@\S+\.\S+/.test(email)) {
+setError('Please enter a valid email address');
+return;
+}
+if (password.length < 6) {
+setError('Password must be at least 6 characters');
+return;
+}
+if (!/^\d{10}$/.test(phone)) {
+setError('Please enter a valid 10-digit phone number');
+return;
+}
+// If validation passes, clear error
+setError('');
+};
+// Handle registration logic (e.g., API call)
+console.log('Registered with', formData);
+return (
+<div>
+<h2>Register</h2>
+{error && <p style={{ color: 'red' }}>{error}</p>}
+<form onSubmit={handleSubmit}>
+<div>
+<label>Name:</label>
+<input
+type="text"
+name="name"
+value={formData.name}
+onChange={handleInputChange}
+/>
+</div>
+<div>
+<label>Email:</label>
+<inputtype="email"
+name="email"
+value={formData.email}
+onChange={handleInputChange}
+};
+);
+/>
+</div>
+<div>
+<label>Password:</label>
+<input
+type="password"
+name="password"
+value={formData.password}
+onChange={handleInputChange}
+/>
+</div>
+<div>
+<label>Phone:</label>
+<input
+type="text"
+name="phone"
+value={formData.phone}
+onChange={handleInputChange}
+/>
+</div>
+<button type="submit">Register</button>
+</form>
+</div>
+export default Register;
+6.Create a react a component to render user name and update user name when there is
+change [use
+useEffect and useState]
+import React, { useState, useEffect } from 'react';
+const UserName = () => {
+// State for storing the username
+const [username, setUsername] = useState('');
+const [newUsername, setNewUsername] = useState('');
+// useEffect to simulate fetching the username when the component mounts
+useEffect(() => {
+// Simulating a fetch request to get the username
+const fetchUsername = async () => {
+// Simulate fetching from an API or a database};
+const storedUsername = "JohnDoe"; // Let's assume this is fetched data
+setUsername(storedUsername);
+fetchUsername();
+}, []); // Empty dependency array ensures this runs only on component mount
+// Function to handle username update
+const updateUsername = () => {
+if (newUsername.trim() !== "") {
+setUsername(newUsername);
+}
+};
+};
+return (
+<div>
+<h2>Current Username: {username}</h2>
+<input
+type="text"
+placeholder="Enter new username"
+value={newUsername}
+onChange={(e) => setNewUsername(e.target.value)}
+/>
+<button onClick={updateUsername}>Update Username</button>
+</div>
+);
+export default UserName;
+7.Implement a simple drop down menu using useRef in react.
+import React, { useState, useRef, useEffect } from 'react';
+const DropdownMenu = () => {
+const [isOpen, setIsOpen] = useState(false); // To track if the dropdown is open or closed
+const dropdownRef = useRef(null);
+// Ref to keep track of the dropdown element
+// Toggle the dropdown visibility
+const toggleDropdown = () => {
+setIsOpen(!isOpen);
+};
+// Close the dropdown if clicked outside
+useEffect(() => {
+const handleClickOutside = (event) => {
+if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+setIsOpen(false);};
+}
+// Add event listener for clicks outside of the dropdown
+document.addEventListener('mousedown', handleClickOutside);
+// Cleanup the event listener when the component unmounts
+return () => {
+document.removeEventListener('mousedown', handleClickOutside);
+};
+}, []);
+};
+return (
+<div>
+<button onClick={toggleDropdown}>Toggle Menu</button>
+{isOpen && (
+<ul ref={dropdownRef}>
+<li>Option 1</li>
+<li>Option 2</li>
+<li>Option 3</li>
+</ul>
+)}
+</div>
+);
+export default DropdownMenu;
+8.Create a react js component which will illustrate the use of useState
+import React, { useState } from 'react';
+const TextInput = () => {
+// Declare a state variable 'text' and a function to update it 'setText'
+const [text, setText] = useState('');
+// Event handler to update state when the input value changes
+const handleChange = (e) => {
+setText(e.target.value);
+};
+return (
+<div>
+<h2>Dynamic Input</h2>
+<input
+type="text"
+placeholder="Type something..."
+value={text}onChange={handleChange}
+};
+);
+/>
+<p>You typed: {text}</p>
+</div>
+export default TextInput;
+9.Create login and register component and routers for them using react routes.
+import React, { useState } from 'react';
+const Login = () => {
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const handleSubmit = (e) => {
+e.preventDefault();
+// You can add login logic here, for now, we'll just log the input values
+console.log("Email:", email, "Password:", password);
+};
+return (
+<div>
+<h2>Login</h2>
+<form onSubmit={handleSubmit}>
+<div>
+<label>Email:</label>
+<input
+type="email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+required
+/>
+</div>
+<div>
+<label>Password:</label>
+<input
+type="password"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+required
+/>
+</div>
+<button type="submit">Login</button>
+</form>
+</div>};
+);
+export default Login;
+import React, { useState } from 'react';
+const Register = () => {
+const [name, setName] = useState('');
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const handleSubmit = (e) => {
+e.preventDefault();
+// You can add registration logic here, for now, we'll just log the input values
+console.log("Name:", name, "Email:", email, "Password:", password);
+};
+return (
+<div>
+<h2>Register</h2>
+<form onSubmit={handleSubmit}>
+<div>
+<label>Name:</label>
+<input
+type="text"
+value={name}
+onChange={(e) => setName(e.target.value)}
+required
+/>
+</div>
+<div>
+<label>Email:</label>
+<input
+type="email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+required
+/>
+</div>
+<div>
+<label>Password:</label>
+<input
+type="password"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+required
+/>
+</div>
+<button type="submit">Register</button>};
+);
+</form>
+</div>
+export default Register;
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+const App = () => {
+return (
+<Router>
+<div>
+<nav>
+<ul>
+<li>
+<Link to="/login">Login</Link>
+</li>
+<li>
+<Link to="/register">Register</Link>
+</li>
+</ul>
+</nav>
+};
+);
+<Routes>
+<Route path="/login" element={<Login />} />
+<Route path="/register" element={<Register />} />
+</Routes>
+</div>
+</Router>
+export default App;
+10.Create react component to display list of employees consider any random employee
+data.
+import React from 'react';
+// Sample employee data
+const employees = [
+{ id: 1, name: 'John Doe', position: 'Software Engineer', department: 'Development' },
+{ id: 2, name: 'Jane Smith', position: 'UI/UX Designer', department: 'Design' },
+{ id: 3, name: 'Bob Johnson', position: 'Project Manager', department: 'Management' },
+{ id: 4, name: 'Alice Brown', position: 'HR Specialist', department: 'Human Resources' },];
+{ id: 5, name: 'Tom Hanks', position: 'DevOps Engineer', department: 'Operations' },
+// EmployeeList Component
+const EmployeeList = () => {
+return (
+<div>
+<h2>Employee List</h2>
+<ul>
+{employees.map(employee => (
+<li key={employee.id}>
+<strong>Name:</strong> {employee.name} <br />
+<strong>Position:</strong> {employee.position} <br />
+<strong>Department:</strong> {employee.department}
+</li>
+))}
+</ul>
+</div>
+);
+};
+export default EmployeeList;
+11.Create a javascript to illustrate the use of async and await.
+// Simulated function to fetch data (e.g., from an API)
+function fetchData() {
+return new Promise((resolve) => {
+setTimeout(() => {
+resolve("Data fetched successfully!");
+}, 2000); // Simulate a 2 second delay
+});
+}
+// Function using async and await
+async function getData() {
+console.log("Fetching data...");
+}
+try {
+// Await the result of fetchData, pausing execution until the promise is resolved
+const result = await fetchData();
+console.log(result); // Logs: "Data fetched successfully!"
+} catch (error) {
+console.error("Error fetching data:", error);
+}
+// Call the async function
+getData();12.Create a javascript to illustrate the use of promise and resolve.
+// Function that returns a promise
+function fetchData() {
+return new Promise((resolve, reject) => {
+// Simulate an asynchronous operation using setTimeout
+setTimeout(() => {
+const success = true; // Simulate success or failure
+}
+if (success) {
+// Resolve the promise with data if successful
+resolve("Data fetched successfully!");
+} else {
+// Reject the promise if there is an error
+reject("Error fetching data.");
+}
+}, 2000); // Simulate a 2 second delay
+});
+// Using the promise
+fetchData()
+.then(result => {
+console.log(result); // Logs: "Data fetched successfully!"
+})
+.catch(error => {
+console.error(error); // Logs error if there is one
+});
+13.Create any react component to illustrate the react hook.
+import React, { useState, useEffect } from 'react';
+const Counter = () => {
+// useState hook to manage the count state
+const [count, setCount] = useState(0);
+// useEffect hook to run side effects
+useEffect(() => {
+// Log the current count to the console whenever it changes
+console.log(`Current count: ${count}`);
+}, [count]); // Dependency array to run effect when count changes
+// Function to handle incrementing the count
+const increment = () => {
+setCount((prevCount) => prevCount + 1);
+};// Function to handle decrementing the count
+const decrement = () => {
+setCount((prevCount) => Math.max(prevCount - 1, 0)); // Prevent count from going below 0
+};
+return (
+<div >
+<h1>Counter</h1>
+<p >Count: {count}</p>
+<button onClick={increment} >
+Increment
+</button>
+<button onClick={decrement}>
+Decrement
+</button>
+</div>
+);
+};
+export default Counter;
+14.Create javascript application to illustrate the use of callback under functions.
+// Function to simulate a delayed operation (e.g., data fetching)
+function fetchData(callback) {
+console.log("Fetching data...");
+// Simulate a delay of 2 seconds (asynchronous behavior)
+setTimeout(() => {
+console.log("Data fetched successfully!");
+const data = { id: 1, name: "John Doe" };
+}
+// Execute the callback function once data is fetched
+callback(data);
+}, 2000);
+// Callback function to handle the fetched data
+function processData(data) {
+console.log("Processing data...");
+console.log(`User ID: ${data.id}`);
+console.log(`User Name: ${data.name}`);
+}
+// Calling the fetchData function with processData as a callback
+fetchData(processData);15.Create a react component to display list of students consider any random student data.
+import React from 'react';
+// Sample student data
+const students = [
+{ id: 1, name: "Alice Johnson", age: 20, grade: "A" },
+{ id: 2, name: "Bob Smith", age: 22, grade: "B" },
+{ id: 3, name: "Charlie Brown", age: 19, grade: "A" },
+{ id: 4, name: "Diana Prince", age: 21, grade: "C" },
+{ id: 5, name: "Ethan Hunt", age: 23, grade: "B" },
+];
+// StudentList component
+const StudentList = () => {
+return (
+<div >
+<h1>Student List</h1>
+<table >
+<thead>
+<tr>
+<th >ID</th>
+<th >Name</th>
+<th >Age</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody>
+{students.map((student) => (
+<tr key={student.id}>
+<td >{student.id}</td>
+<td >{student.name}</td>
+<td >{student.age}</td>
+<td >{student.grade}</td>
+</tr>
+))}
+</tbody>
+</table>
+</div>
+);
+};
+export default StudentList;
